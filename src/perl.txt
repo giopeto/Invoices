@@ -1,0 +1,83 @@
+use strict; 
+
+use lib '/home/pirita/web/core/common/lib';
+use lib '/home/pirita/web/core/store2/lib';
+use lib '/home/pirita/web/core/cash/lib';
+use lib '/home/pirita/web/core/ps/lib';
+use lib '/home/pirita/web/core/manufacture/lib';
+use lib '/home/pirita/web/core/accounting2/lib';
+use lib '/home/pirita/web/core/accounting2/lib';
+use CUBES::PS::prices_lists;
+use atssql5;
+use Data::Dumper;
+use CUBES::Factory;
+
+if($ARGV[0] eq '' || $ARGV[1] eq ''){
+	my $hint= "Usage: perl rermove_price_lists.pl <database_name>  <host>\n";
+	$hint.="Example: perl rermove_price_lists.pl core core_wf 127.0.0.1\n";
+	print $hint;
+	exit();
+}
+
+my $sql = new atssql5($ARGV[0], 'asterix', 'jackp0t', $ARGV[2]);
+
+my $prices_list_obj = CUBES::Factory::make('CUBES::PS::prices_lists', 200000,$sql);
+
+my $is_used = $sql->fetch_scalar("SELECT COUNT(*) FROM store2_units WHERE prices_list_id IN('1' , '2' ,'3')");
+
+die dctr(qq~This price list is used and can not be deleted~) if($is_used);
+
+	
+	my $a_price_list_codes = qw /'ОБЩА ЦЕНОВА ЛИСТА-НА ЕДРО' 'ОНЛАЙН-ОБЩА ЦЕНОВА ЛИСТА' 'ТЕХНОПОЛИС-ОБЩА ЦЕНОВА ЛИСТА'/;
+	
+	
+	foreach my $code (@$a_price_list_codes) {
+	
+		warn "IDDDD: ".$row;
+		
+		my $id = $sql->fetch_scalar(" SELECT id FROM ps_prices_lists WHERE code = '".$args{id}."' ");
+		
+		
+		if ($id > 0) {
+		
+			# eval {
+				# 	$sql->begin_work;	
+				# 	$sql->doit(" DELETE FROM ps_prices_lists2items_days WHERE prices_list_id='".$args{id}."' ");
+				
+				#	warn "DELETE ps_prices_lists2items_days FOR ".$row;
+				
+				#	$sql->doit(" DELETE FROM store2_items2suppliers WHERE price_list_id='".$args{id}."' ");
+				
+				#	warn "DELETE store2_items2suppliers FOR ".$row;
+				
+				#	$sql->doit(" DELETE FROM ps_prices_lists2items WHERE prices_list_id='".$args{id}."' ");
+				
+				#	warn "DELETE ps_prices_lists2items FOR ".$row;
+				
+				#	$sql->doit(" DELETE FROM ps_prices_lists WHERE id='".$args{id}."' ");
+					
+				#	warn "DELETE ps_prices_lists FOR ".$row;
+				
+				# 	$sql->commit;
+				# } or do {
+				# 	my $err = $@;
+				# 	$sql->rollback();
+				# 	die ($err) unless $err eq '';
+				# };
+				
+				
+				warn "READY PL ".$row;
+				
+				
+		}	
+		
+	
+	}
+
+
+
+	
+
+
+
+
